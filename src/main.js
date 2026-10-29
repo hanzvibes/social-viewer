@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import './style.css';
+import './instagram-preview.css';
 
 const $ = (selector) => document.querySelector(selector);
 const form = $('#analysis-form');
@@ -391,9 +392,9 @@ function animateNumber(selector, target) {
 
 const demoData = {
   'not-following': [
-    ['a', 'alexa.rose', 'Not following back', 'coral'],
-    ['m', 'mika.studio', 'Not following back', 'sage'],
-    ['n', 'nathan.jpg', 'Not following back', 'blue']
+    ['a', 'alexa.rose', 'Doesn’t follow you back', 'coral'],
+    ['m', 'mika.studio', 'Doesn’t follow you back', 'sage'],
+    ['n', 'nathan.jpg', 'Doesn’t follow you back', 'blue']
   ],
   fans: [
     ['j', 'julescreates', 'Follows you', 'gold'],
@@ -435,8 +436,8 @@ document.querySelectorAll('[data-demo-tab]').forEach((button) => {
       row.append(avatar, info, mark);
       demoUsers.append(row);
     }
-    const heading = $('.mockup-list-head > span:first-child');
-    if (heading) heading.textContent = category === 'fans' ? 'People who follow you' : category === 'mutual' ? 'Mutual connections' : 'Connection insights';
+    const heading = $('.ig-insight-head strong');
+    if (heading) heading.textContent = category === 'fans' ? 'People who follow you' : category === 'mutual' ? 'Your mutual connections' : 'Find your connection gaps';
     const count = button.querySelector('b');
     if (count) count.textContent = demoCounts[category];
   });
