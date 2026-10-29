@@ -1,0 +1,19 @@
+/* Raihan Portfolio Design System tokens, adapted for Social Viewer. */
+:root {
+ color-scheme: light;
+ --background: 42 35% 94%; --foreground: 221 22% 17%; --border: 36 20% 82%;
+ --card: 42 32% 91%; --muted: 39 22% 88%; --muted-foreground: 220 10% 43%;
+ --primary: 9 72% 52%; --primary-solid: 9 66% 44%; --primary-solid-hover: 9 66% 38%;
+ --primary-ink: 9 66% 44%; --accent: 159 24% 67%; --section-alt: 40 31% 91%;
+ --panel: 221 22% 17%; --panel-foreground: 42 35% 94%;
+ --app-font-sans: 'DM Sans', sans-serif; --app-font-serif: 'Manrope', sans-serif;
+ --app-font-mono: 'DM Mono', monospace; --radius: .35rem;
+}
+html.dark {
+ color-scheme: dark; --background: 221 22% 13%; --foreground: 42 35% 94%;
+ --border: 220 12% 28%; --card: 221 20% 17%; --muted: 220 12% 24%;
+ --muted-foreground: 220 10% 67%; --primary: 9 72% 58%;
+ --primary-solid: 9 66% 48%; --primary-solid-hover: 9 66% 42%;
+ --primary-ink: 9 85% 70%; --accent: 159 24% 49%; --section-alt: 221 20% 15%;
+ --panel: 221 22% 17%; --panel-foreground: 42 35% 94%;
+}
