@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import './style.css';
+import './instagram-preview.css';
 
 const $ = (selector) => document.querySelector(selector);
 const form = $('#analysis-form');
