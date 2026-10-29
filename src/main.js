@@ -350,3 +350,18 @@ $('#reset-button').addEventListener('click', () => {
   updateFilesUI();
   $('#tracker').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
+
+// Light/dark theme follows the shared Raihan Portfolio design tokens.
+const themeButton = $('#theme-toggle');
+const themeIcon = $('#theme-icon');
+function setTheme(theme) {
+  const dark = theme === 'dark';
+  document.documentElement.classList.toggle('dark', dark);
+  try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
+  if (themeIcon) themeIcon.textContent = dark ? '☼' : '◐';
+  if (themeButton) themeButton.setAttribute('aria-label', dark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap');
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute('content', dark ? '#1a202a' : '#f4efe4');
+}
+setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+themeButton?.addEventListener('click', () => setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'));
