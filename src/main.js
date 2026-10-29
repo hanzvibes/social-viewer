@@ -218,10 +218,10 @@ function renderList() {
 }
 
 function renderResults() {
-  $('#followers-count').textContent = new Intl.NumberFormat('id-ID').format(sets.followers.length);
-  $('#following-count').textContent = new Intl.NumberFormat('id-ID').format(sets.following.length);
-  $('#not-following-count').textContent = new Intl.NumberFormat('id-ID').format(sets.notFollowing.length);
-  $('#mutual-count').textContent = new Intl.NumberFormat('id-ID').format(sets.mutual.length);
+  animateNumber('#followers-count', sets.followers.length);
+  animateNumber('#following-count', sets.following.length);
+  animateNumber('#not-following-count', sets.notFollowing.length);
+  animateNumber('#mutual-count', sets.mutual.length);
   $('#tab-not-following').textContent = sets.notFollowing.length;
   $('#tab-fans').textContent = sets.fans.length;
   $('#tab-mutual').textContent = sets.mutual.length;
@@ -363,5 +363,94 @@ function setTheme(theme) {
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   if (themeMeta) themeMeta.setAttribute('content', dark ? '#1a202a' : '#f4efe4');
 }
-setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+let savedTheme = 'light';
+try { savedTheme = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'; } catch {}
+setTheme(savedTheme);
 themeButton?.addEventListener('click', () => setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'));
+
+
+// Small interactions that make the preview feel like a real product.
+function animateNumber(selector, target) {
+  const element = $(selector);
+  if (!element) return;
+  const formatter = new Intl.NumberFormat('id-ID');
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    element.textContent = formatter.format(target);
+    return;
+  }
+  const start = performance.now();
+  const duration = 620;
+  const frame = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 4);
+    element.textContent = formatter.format(Math.round(target * eased));
+    if (progress < 1) requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+}
+
+const demoData = {
+  'not-following': [
+    ['a', 'alexa.rose', 'Not following back', 'coral'],
+    ['m', 'mika.studio', 'Not following back', 'sage'],
+    ['n', 'nathan.jpg', 'Not following back', 'blue']
+  ],
+  fans: [
+    ['j', 'julescreates', 'Follows you', 'gold'],
+    ['s', 'sarah.makes', 'Follows you', 'coral'],
+    ['k', 'kenji.frames', 'Follows you', 'sage']
+  ],
+  mutual: [
+    ['l', 'luna.archive', 'Following each other', 'blue'],
+    ['d', 'davidonfilm', 'Following each other', 'gold'],
+    ['e', 'ella.studio', 'Following each other', 'sage']
+  ]
+};
+const demoCounts = { 'not-following': 28, fans: 14, mutual: 656 };
+document.querySelectorAll('[data-demo-tab]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const category = button.dataset.demoTab;
+    document.querySelectorAll('[data-demo-tab]').forEach((tab) => {
+      const active = tab === button;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-selected', String(active));
+    });
+    const demoUsers = $('#demo-users');
+    if (!demoUsers || !demoData[category]) return;
+    demoUsers.replaceChildren();
+    for (const [initial, handle, description, tone] of demoData[category]) {
+      const row = document.createElement('div');
+      row.className = 'mockup-user';
+      const avatar = document.createElement('span');
+      avatar.className = 'mockup-user-avatar ' + tone;
+      avatar.textContent = initial;
+      const info = document.createElement('span');
+      const name = document.createElement('b');
+      name.textContent = '@' + handle;
+      const detail = document.createElement('small');
+      detail.textContent = description;
+      info.append(name, detail);
+      const mark = document.createElement('i');
+      mark.textContent = '↗';
+      row.append(avatar, info, mark);
+      demoUsers.append(row);
+    }
+    const heading = $('.mockup-list-head > span:first-child');
+    if (heading) heading.textContent = category === 'fans' ? 'People who follow you' : category === 'mutual' ? 'Mutual connections' : 'Connection insights';
+    const count = button.querySelector('b');
+    if (count) count.textContent = demoCounts[category];
+  });
+});
+
+if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const revealTargets = document.querySelectorAll('main > section:not(.hero), footer');
+  revealTargets.forEach((element) => element.classList.add('reveal-on-scroll'));
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+  revealTargets.forEach((element) => revealObserver.observe(element));
+}
